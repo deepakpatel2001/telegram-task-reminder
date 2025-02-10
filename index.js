@@ -219,6 +219,15 @@ bot.onText(/\/fail (\d+)/, (msg, match) => {
     }
 });
 
+bot.onText(/\/cleartasks/, (msg) => {
+    const chatId = msg.chat.id;
+
+    // Assume tasks are stored in an array (or database)
+    userTasks[chatId] = []; // Clear all tasks for the user
+
+    bot.sendMessage(chatId, '🗑 All tasks have been cleared!');
+});
+
 // ✅ **Parse Time Format**
 function parseTask(input) {
     const parts = input.trim().match(/(.+) (\d{1,2}):(\d{2}) ?(AM|PM)?/i);
