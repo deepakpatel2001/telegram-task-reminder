@@ -16,7 +16,7 @@ const failSong = 'songs/motivation.mp3';
 bot.onText(/\/start/, (msg) => {
     bot.sendMessage(
         msg.chat.id,
-        '🔥 Bhai! Apna time table set karne ke liye `/timetable` likh.\nYa fir ek ek task add karne ke liye `/addtask` use kar.'
+        '🔥 Bhai! Apna time table set karne ke liye `/timetable` likhiye.\nYa fir ek ek task add karne ke liye `/addtask` use kariye.'
     );
 });
 
@@ -34,7 +34,7 @@ bot.onText(/\/timetable (.+)/, (msg, match) => {
 
     bot.sendMessage(
         chatId,
-        '✅ Tera full time table set ho gaya! /tasks likh ke dekh.'
+        '✅ Aapka full time table set ho gaya! /tasks likh ker dekho.'
     );
 });
 
@@ -72,7 +72,7 @@ bot.onText(/\/tasks/, (msg) => {
                     }`
             )
             .join('\n');
-        bot.sendMessage(chatId, `📋 **Tere Tasks:**\n${taskList}`, {
+        bot.sendMessage(chatId, `📋 **Aapke Tasks:**\n${taskList}`, {
             parse_mode: 'Markdown',
         });
     }
@@ -90,7 +90,7 @@ bot.onText(/\/update (\d+) (.+)/, (msg, match) => {
     } else {
         bot.sendMessage(
             chatId,
-            '❌ Galat task number, /tasks likh ke check kar.'
+            '❌ Galat task number, /tasks likh ker check karo.'
         );
     }
 });
@@ -109,7 +109,7 @@ bot.onText(/\/delete (\d+)/, (msg, match) => {
     } else {
         bot.sendMessage(
             chatId,
-            '❌ Galat task number, /tasks likh ke check kar.'
+            '❌ Galat task number, /tasks likh ke check karo.'
         );
     }
 });
@@ -138,7 +138,7 @@ setInterval(() => {
             }
         });
     });
-}, 60000); // Check every minute
+}, 60000*30); // Check every half an hour
 
 // ✅ **Mark Task as Complete**
 bot.onText(/\/done (\d+)/, (msg, match) => {
@@ -156,7 +156,7 @@ bot.onText(/\/done (\d+)/, (msg, match) => {
     } else {
         bot.sendMessage(
             chatId,
-            '❌ Galat task number, /tasks likh ke check kar.'
+            '❌ Galat task number, /tasks likh ke check karo.'
         );
     }
 });
@@ -176,7 +176,7 @@ bot.onText(/\/fail (\d+)/, (msg, match) => {
     } else {
         bot.sendMessage(
             chatId,
-            '❌ Galat task number, /tasks likh ke check kar.'
+            '❌ Galat task number, /tasks likh ke check karo.'
         );
     }
 });
