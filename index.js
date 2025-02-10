@@ -14,10 +14,34 @@ const failSong = 'songs/motivation.mp3';
 
 // ✅ Start Command
 bot.onText(/\/start/, (msg) => {
-    bot.sendMessage(
-        msg.chat.id,
-        '🔥 Bhai! Apna time table set karne ke liye `/timetable` likhiye.\nYa fir ek ek task add karne ke liye `/addtask` use kariye.'
-    );
+    const chatId = msg.chat.id;
+    const welcomeMessage = `
+👋 **Welcome to Your Personal Accountability Bot!**  
+
+💡 **Mere Features:**  
+✅ **Daily Task Reminders** – Aapko tere tasks yaad dilata rahunga.  
+✅ **Auto Task Reset** – Har raat 12 baje saare tasks "pending" ho jayenge.  
+✅ **Music Motivation** – Task complete hone pe song bajega! 🎵  
+✅ **Failure Alert** – Agar fail kiya to sad GIF + dard bhar song milega. 😢  
+✅ **Full Timetable Support** – Ek baar me pura timetable set kar sakte ho.  
+✅ **Vacation Mode** – Jab bahar ho, to reminders band karne ka option hai.  
+✅ **Multi-User Support** – Aapke saare doston ke liye bhi available hai!  
+
+⚡ **Commands:**  
+📌 **/addtask [task]** – Naya task add kare individual.  
+📌 **/tasks** – Apne saare tasks dekho.  
+📌 **/done [task number]** – Task complete mark kare. ✅  
+📌 **/fail [task number]** – Task fail mark kare. ❌  
+📌 **/deletetask [task number]** – Specific task delete kare.
+📌 **/cleartasks** – Sare tasks clear kare.  
+📌 **/timetable** – Pura timetable ek saath add kare.  
+📌 **/vacation [on/off]** – Vacation mode enable/disable kare.  
+
+🚀 **Chalo ab productivity badhane ka time aa gaya!**  
+Bolo, kya karna hai?  
+  `;
+
+    bot.sendMessage(chatId, welcomeMessage);
 });
 
 // ✅ **Poora Time Table Ek Saath Add Karna**
@@ -138,7 +162,7 @@ setInterval(() => {
             }
         });
     });
-}, 60000*30); // Check every half an hour
+}, 60000 * 30); // Check every half an hour
 
 // ✅ **Mark Task as Complete**
 bot.onText(/\/done (\d+)/, (msg, match) => {
