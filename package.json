@@ -1,0 +1,22 @@
+{
+  "name": "progress-tracker",
+  "version": "1.0.0",
+  "description": "This bot will help to remind me again and again",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "jaag",
+    "ja",
+    "re"
+  ],
+  "author": "Deepak Patel",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "node-schedule": "^2.1.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "play-sound": "^1.1.6"
+  }
+}
