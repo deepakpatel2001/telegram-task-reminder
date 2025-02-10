@@ -19,25 +19,39 @@ bot.onText(/\/start/, (msg) => {
 👋 **Welcome to Your Personal Accountability Bot!**  
 
 💡 **Mere Features:**  
-✅ **Daily Task Reminders** – Aapko tere tasks yaad dilata rahunga.  
+✅ **Daily Task Reminders** – Aapko aapke tasks yaad dilata rahunga.  
+
 ✅ **Auto Task Reset** – Har raat 12 baje saare tasks "pending" ho jayenge.  
+
 ✅ **Music Motivation** – Task complete hone pe song bajega! 🎵  
+
 ✅ **Failure Alert** – Agar fail kiya to sad GIF + dard bhar song milega. 😢  
+
 ✅ **Full Timetable Support** – Ek baar me pura timetable set kar sakte ho.  
+
 ✅ **Vacation Mode** – Jab bahar ho, to reminders band karne ka option hai.  
+
 ✅ **Multi-User Support** – Aapke saare doston ke liye bhi available hai!  
 
 ⚡ **Commands:**  
-📌 **/addtask [task]** – Naya task add kare individual.  
+📌 **/addtask [task]** – Naya task add kare individual. -->  Ex. /addtask <Task Name> <Timing>, /addtask Go for School 07:10 AM
+
 📌 **/tasks** – Apne saare tasks dekho.  
+
 📌 **/done [task number]** – Task complete mark kare. ✅  
+
 📌 **/fail [task number]** – Task fail mark kare. ❌  
+
 📌 **/deletetask [task number]** – Specific task delete kare.
+
 📌 **/cleartasks** – Sare tasks clear kare.  
-📌 **/timetable** – Pura timetable ek saath add kare.  
+
+📌 **/timetable** – Pura timetable ek saath add kare. --->  Ex. /timetable Subha (Wake+Yoga+Fresh) 05:15 AM; Gym jana 06:00 AM; Bath 06:40 AM; and so on with comma separated.
+
 📌 **/vacation [on/off]** – Vacation mode enable/disable kare.  
 
 🚀 **Chalo ab productivity badhane ka time aa gaya!**  
+
 Bolo, kya karna hai?  
   `;
 
