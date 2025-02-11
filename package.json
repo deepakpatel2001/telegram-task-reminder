@@ -15,8 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.7",
+    "node-cron": "^3.0.3",
     "node-schedule": "^2.1.1",
     "node-telegram-bot-api": "^0.66.0",
+    "path": "^0.12.7",
     "play-sound": "^1.1.6"
   }
 }
