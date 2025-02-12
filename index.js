@@ -133,24 +133,37 @@ bot.onText(/\/tasks/, (msg) => {
 });
 
 // ✅ **Update Task**
-bot.onText(/\/update(?:\s+(\d+)\s+(.+))?/, (msg, match) => {
+bot.onText(/\/update(?:\s+(\d+)\s+(.+?)\s+(\d{1,2}:\d{2}))?/, (msg, match) => {
     const chatId = msg.chat.id;
 
     if (!checkTasksExist(chatId)) return;
 
+    // If the task number and new task description are not provided, send a guide
     if (!match[1] || !match[2]) {
         return bot.sendMessage(
             chatId,
-            '⚠️ Please specify the task number and the new task description.\n\nExample:\n🔹 `/update 2 Gym` (Update task number 2 with new description "Gym")'
+            '⚠️ Please specify the task number, new task description, and optionally the time.\n\nExample:\n🔹 `/update 2 Gym 14:30` (Update task number 2 with new description "Gym" and time "14:30")'
         );
     }
 
     const taskIndex = parseInt(match[1]) - 1;
     const newTask = match[2];
+    const newTime = match[3];
 
+    // Check if the task exists
     if (userTasks[chatId] && userTasks[chatId][taskIndex]) {
         userTasks[chatId][taskIndex].task = newTask;
-        bot.sendMessage(chatId, `✅ Task updated!\n🔹 New Task: "${newTask}"`);
+        if (newTime) {
+            userTasks[chatId][taskIndex].time = newTime;
+        }
+
+        let responseMessage = `✅ Task updated!\n🔹 New Task: "${newTask}"`;
+        
+        if (newTime) {
+            responseMessage += `\n🕒 New Time: "${newTime}"`;
+        }
+
+        bot.sendMessage(chatId, responseMessage);
     } else {
         bot.sendMessage(
             chatId,
@@ -158,6 +171,7 @@ bot.onText(/\/update(?:\s+(\d+)\s+(.+))?/, (msg, match) => {
         );
     }
 });
+
 
 
 // ✅ **Delete Task**
