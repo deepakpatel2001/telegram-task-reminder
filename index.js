@@ -46,10 +46,22 @@ Let’s get started! What’s your first task?
     bot.sendMessage(chatId, welcomeMessage);
 });
 
+function checkTasksExist(chatId) {
+    if (!userTasks[chatId] || userTasks[chatId].length === 0) {
+        bot.sendMessage(
+            chatId,
+            '⚠️ No tasks available. Please create tasks first.'
+        );
+        return false;
+    }
+    return true;
+}
+
 
 // ✅ **Poora Time Table Ek Saath Add Karna**
 bot.onText(/\/timetable(?:\s+(.+))?/, (msg, match) => {
     const chatId = msg.chat.id;
+
     if (!match[1]) return sendUsageMessage('/timetable', chatId);
 
     const timeTableData = match[1].split(';');
@@ -123,6 +135,9 @@ bot.onText(/\/tasks/, (msg) => {
 // ✅ **Update Task**
 bot.onText(/\/update(?:\s+(\d+)\s+(.+))?/, (msg, match) => {
     const chatId = msg.chat.id;
+
+    if (!checkTasksExist(chatId)) return;
+
     if (!match[1] || !match[2]) {
         return bot.sendMessage(
             chatId,
@@ -148,6 +163,7 @@ bot.onText(/\/update(?:\s+(\d+)\s+(.+))?/, (msg, match) => {
 // ✅ **Delete Task**
 bot.onText(/\/deletetask(?:\s+(\d+))?/, (msg, match) => {
     const chatId = msg.chat.id;
+    if (!checkTasksExist(chatId)) return;
     if (!match[1]) {
         return bot.sendMessage(
             chatId,
@@ -173,8 +189,15 @@ bot.onText(/\/deletetask(?:\s+(\d+))?/, (msg, match) => {
 
 
 // ✅ Vacation Mode
-bot.onText(/\/vacation (on|off)/, (msg, match) => {
+bot.onText(/\/vacation(?:\s+(on|off))?/, (msg, match) => {
     const chatId = msg.chat.id;
+    if (!match[1]) {
+        return bot.sendMessage(
+            chatId,
+            '⚠️ Please specify on/off for vacation mode.\n\nExample:\n🔹 /vacation on\n🔹 /vacation off'
+        );
+    }
+
     vacationMode[chatId] = match[1] === 'on';
     bot.sendMessage(chatId, `🌴 Vacation Mode: ${match[1].toUpperCase()}`);
 });
@@ -191,12 +214,12 @@ setInterval(() => {
             if (task.time === currentTime && !task.completed) {
                 bot.sendMessage(
                     chatId,
-                    `⏰ Reminder: Regarding your "${task.task} task."`
+                    `⏰ Reminder: Regarding your "${task.task}" task.`
                 );
             }
         });
     });
-}, 60000); // Check every 10 minutes
+}, 60000); // Check every minute
 
 // ✅ **Mark Task as Complete**
 const successSong =
@@ -206,7 +229,7 @@ const failSong =
 
 bot.onText(/\/done(?:\s+(.+))?/, (msg, match) => {
     const chatId = msg.chat.id;
-
+    if (!checkTasksExist(chatId)) return;
     if (!match[1]) {
         bot.sendMessage(
             chatId,
@@ -269,7 +292,7 @@ bot.onText(/\/done(?:\s+(.+))?/, (msg, match) => {
 
 bot.onText(/\/fail(?:\s+(\d+))?/, (msg, match) => {
     const chatId = msg.chat.id;
-
+    if (!checkTasksExist(chatId)) return;
     if (!match[1]) {
         bot.sendMessage(
             chatId,
@@ -311,11 +334,12 @@ bot.onText(/\/fail(?:\s+(\d+))?/, (msg, match) => {
 // All completed task list
 bot.onText(/\/completedtask/, (msg) => {
     const chatId = msg.chat.id;
+    if (!checkTasksExist(chatId)) return;
 
     if (!completedTasks[chatId] || completedTasks[chatId].length === 0) {
         bot.sendMessage(
             chatId,
-            '⚠️ You have not completed any tasks yet, or this is your first task.'
+            '⚠️ You have not completed any tasks yet, or this is your first task. Start your tasks for the day!'
         );
     } else {
         const completedTaskList = completedTasks[chatId]
@@ -332,9 +356,12 @@ bot.onText(/\/completedtask/, (msg) => {
 // all failed task
 bot.onText(/\/incompletedtask/, (msg) => {
     const chatId = msg.chat.id;
-
+    if (!checkTasksExist(chatId)) return;
     if (!failedTasks[chatId] || failedTasks[chatId].length === 0) {
-        bot.sendMessage(chatId, '⚠️ You have not failed any tasks yet.');
+        bot.sendMessage(
+            chatId,
+            '⚠️ You have not failed any tasks yet. Keep it up!'
+        );
     } else {
         const failedTaskList = failedTasks[chatId]
             .map((t, i) => `🔹 ${i + 1}. ${t.task} at ${t.time}`)
@@ -347,11 +374,30 @@ bot.onText(/\/incompletedtask/, (msg) => {
 
 bot.onText(/\/cleartasks/, (msg) => {
     const chatId = msg.chat.id;
-
-    // Assume tasks are stored in an array (or database)
-    userTasks[chatId] = []; // Clear all tasks for the user
-
-    bot.sendMessage(chatId, '🗑 All tasks have been cleared!');
+    if (!checkTasksExist(chatId)) return;
+    bot.sendMessage(
+        chatId,
+        'Are you sure you want to clear all tasks? Type "yes" to confirm.',
+        {
+            reply_markup: {
+                force_reply: true,
+            },
+        }
+    ).then((sentMsg) => {
+        bot.onReplyToMessage(chatId, sentMsg.message_id, (replyMsg) => {
+            if (replyMsg.text.toLowerCase() === 'yes') {
+                userTasks[chatId] = [];
+                completedTasks[chatId] = [];
+                failedTasks[chatId] = [];
+                bot.sendMessage(
+                    chatId,
+                    '🗑 All tasks have been cleared! You can now create a new timetable or tasks.'
+                );
+            } else {
+                bot.sendMessage(chatId, 'Task clearing cancelled.');
+            }
+        });
+    });
 });
 
 // ✅ **Parse Time Format**
@@ -377,18 +423,15 @@ function parseTask(input) {
 
 const resetTasksDaily = () => {
     schedule.scheduleJob('0 0 * * *', () => {
-        // Runs at 00:00 (midnight) every day
         Object.keys(userTasks).forEach((chatId) => {
             if (!taskHistory[chatId]) taskHistory[chatId] = [];
             if (!completedTasks[chatId]) completedTasks[chatId] = [];
             if (!failedTasks[chatId]) failedTasks[chatId] = [];
 
-            // Move all tasks to history
             taskHistory[chatId].push(...userTasks[chatId]);
             completedTasks[chatId].push(...completedTasks[chatId]);
             failedTasks[chatId].push(...failedTasks[chatId]);
 
-            // Clear tasks for the new day
             userTasks[chatId] = [];
         });
 
