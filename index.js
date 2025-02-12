@@ -2,6 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const schedule = require('node-schedule');
 const player = require('play-sound')();
+const moment = require('moment-timezone');
 
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
@@ -11,6 +12,8 @@ let vacationMode = {};
 let taskHistory = {}; // Store completed/uncompleted tasks before reset
 let completedTasks = {}; // Store completed tasks
 let failedTasks = {}; // Store failed tasks
+
+resetTasksDaily();
 
 // ✅ Start Command
 bot.onText(/\/start/, (msg) => {
@@ -218,8 +221,8 @@ bot.onText(/\/vacation(?:\s+(on|off))?/, (msg, match) => {
 
 // ✅ **Task Reminder System**
 setInterval(() => {
-    const now = new Date();
-    const currentTime = `${now.getHours()}:${now.getMinutes()}`;
+    const now = moment().tz("Asia/Kolkata");  // Set your desired time zone
+    const currentTime = now.format("HH:mm");
 
     Object.keys(userTasks).forEach((chatId) => {
         if (vacationMode[chatId]) return;
@@ -452,7 +455,5 @@ const resetTasksDaily = () => {
         console.log('✅ All tasks moved to history and reset at midnight.');
     });
 };
-
-resetTasksDaily();
 
 console.log('🚀 Bot is running...');
